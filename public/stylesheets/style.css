@@ -1,9 +1,11 @@
-body {  font-size: 9pt; font-family: "consolas", "Lucida Grande", Helvetica, Arial, sans-serif; padding:5px;}
+body {  font-size: 9pt; font-family: "consolas", "Lucida Grande", Helvetica, Arial, sans-serif; padding:5px; color:#808080;}
 a {  color: #00B7FF;}
+table{width:100%;}
+.td_paste{width:14px; vertical-align:middle;}
 #tbau {width:100%;}
 #resultbox {padding-top:10px;}
 .authorbox{}
-.au_name{}
+.au_name{font-weight:bold; color:#000;}
 .au_organ_box{padding-left:10px;}
 .au_og_name{}
 .au_og_list{padding-left:10px;}

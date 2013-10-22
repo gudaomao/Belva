@@ -40,14 +40,29 @@ module.exports  = function(app){
     });
     app.post('/delorgan',function(req,res){
         var name = req.param('name');
-        var year = req.param('yr');
+        var time = req.param('tm');
         var organ = req.param('og');
-        console.log('del organ:'+name+","+year+','+organ);
-        Author.delorgan(name,year,organ,function(err){
+        console.log('del organ:'+name+","+time+','+organ);
+        Author.delorgan(name,time,organ,function(err){
             if(err){
                 res.send(err);
             }
             res.send("");
         });
     });
+    app.post('/editorgantime',function(req,res){
+        var name = req.param('name');
+        var time = req.param('tm');
+        var organ = req.param('og');
+        var ntime = req.param('ntm');
+        console.log('editorgantime:'+name+","+time+","+organ+","+ntime);
+        Author.editorgantime(name,time,organ,ntime,function(err){
+            if(err){
+                res.send(err);
+            }
+            else{
+                res.send("");
+            }
+        })
+    })
 };

@@ -1,24 +1,50 @@
+//全局变量---------------------------------------------------------------------------------------------------------------
+//给哪个机构设置年份
+var $organtime, newtime;
+
+
+
+//
 $(function(){
     $("#tbau").change(function(){
-        console.log('search author:');
-        var t = $.trim($(this).val());
-        if(t!=""){
-            getauthor(t);
-        }
+        searchauthor();
     });
     $("#btnsave").click(function(){
         newauthor();
     });
-    $(document).on('click','.au_new_organ',function(){
+    $(document).on('click','.f_tm',function(e){  //点击选择新的机构时间
+        $me=$(e.target);
+        var tm = $me.text();
+        editorgantime(tm);
+    }).on('click','.au_new_organ',function(){  //点击新加机构
         var memog = window.bound.getMemText();
         neworgan(memog);
-    }).on('click','.au_del_organ',function(e){
-            var $me = $(e.target);
-            var og = $me.prev().text();
-            var yr = $me.prev().prev().text();
-            delorgan(yr,og,$me);
-        });
+    }).on('click','.au_del_organ',function(e){  //点击删除机构
+        var $me = $(e.target);
+        var og = $me.prev().text();
+        var tm = $me.prev().prev().text();
+        delorgan(tm,og,$me);
+    }).on('click','.au_paste',function(e){  //点击粘贴要查询的学者名
+        var memau = window.bound.getMemText();
+        $("#tbau").val(memau);
+        searchauthor();
+    }).on('click','.au_og_tm',function(e){  //点击机构中的时间
+        var $me = $(e.target);
+        newtime = $me.text();
+        $organtime = $me;
+        $("#floattimebox").show();
+    });
 });
+//以下为学者 ------------------------------------------------------------------------------------------------------------
+//搜索学者
+function searchauthor(){
+    console.log('search author:');
+    var t = $("#tbau").val();
+    if(t!=""){
+        getauthor(t);
+    }
+};
+//获取学者详细信息
 function getauthor(t){
     $.get('/author',{t:t},function(data,status){
         if(data && data.length>0){
@@ -34,6 +60,7 @@ function getauthor(t){
         }
     });
 }
+//新加学者
 function newauthor(){
     var t = $.trim($("#tbau").val());
     if(t!=""){
@@ -49,6 +76,7 @@ function newauthor(){
         });
     }
 }
+//显示学者(格式化内容)
 function formatauthor(data)
 {
     console.log('format:');
@@ -64,13 +92,18 @@ function formatauthor(data)
             console.log(og);
             var xog = og.og;
             var xtm = og.tm;
-            h+='<div class="au_organ"><span class="au_og_tm">'+xtm+'</span>,<span class="au_og_nm">'+xog+'</span><img src="/images/del.png" class="au_del_organ" /></div>';
+            h+='<div class="au_organ">';
+            h+='<span class="au_og_tm">'+xtm+'</span>,';
+            h+='<span class="au_og_nm">'+xog+'</span>';
+            h+='<img src="/images/del.png" class="au_del_organ" /></div>';
         });
     }
     h+='</div></div></div>';
     return h;
 }
 
+//以下为机构-------------------------------------------------------------------------------------------------------------
+//添加机构
 function neworgan(og){
     var t = $("#tbau").val();
     $.post('/saveorgan',{au:t,og:og},function(data,text){
@@ -78,15 +111,16 @@ function neworgan(og){
             alert(data);
         }
         else{
-            var $me = $(".au_text");
-            $('<div class="au_organ">0, '+og+'</div>').appendTo($me);
+            var $me = $(".au_og_list");
+            $('<div class="au_organ"><span class="au_og_tm">0</span>,<span class="au_og_nm">'+og+'</span><img src="/images/del.png" class="au_del_organ" /></div>').appendTo($me);
         }
     });
 }
-function delorgan(yr,og,$me)
+//删除机构
+function delorgan(tm,og,$me)
 {
     var name = $("#tbau").val();
-    $.post('/delorgan',{name:name,yr:yr,og:og},function(err){
+    $.post('/delorgan',{name:name,tm:tm,og:og},function(err){
         console.log(err);
         if(err){
             alert(err);
@@ -95,4 +129,24 @@ function delorgan(yr,og,$me)
             $me.parent().hide();
         }
     });
+}
+//编辑机构的时间
+function editorgantime(newtime)
+{
+    var name = $("#tbau").val();
+    if($organtime && newtime){
+        var og = $organtime.next().text();
+        var tm = $organtime.text();
+        $.post('/editorgantime',{name:name,tm:tm,og:og,ntm:newtime},function(data,text){
+            if(data){
+            }
+            else{
+                $organtime.text(newtime);
+                $organtime = undefined;
+                newtime = undefined;
+                $("#floattimebox").hide();
+            }
+        })
+    }
+
 }

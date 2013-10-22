@@ -84,9 +84,9 @@ Author.saveorgan = function(name,organ,callback){
         });
     });
 };
-Author.delorgan = function(name,year,organ,callback){
+Author.delorgan = function(name,tm,organ,callback){
     console.log("name:"+name);
-    console.log("year:"+year);
+    console.log("year:"+tm);
     console.log("organ:"+organ);
     mongodb.open(function(err,db){
         if(err){
@@ -103,7 +103,7 @@ Author.delorgan = function(name,year,organ,callback){
                 "$pull":{
                     organ:{
                         "og":organ,
-                        "tm":year+""
+                        "tm":tm+""
                     }
                 }
             },function(err,result){
@@ -116,3 +116,31 @@ Author.delorgan = function(name,year,organ,callback){
         });
     });
 };
+Author.editorgantime = function(name,tm,og,ntm,callback){
+   mongodb.open(function(err,db){
+       if(err){
+           return callback(err);
+       }
+       db.collection('authors',function(err,collection){
+           if(err){
+               mongodb.close();
+               return callback(err);
+           }
+           collection.update({
+               name:name,
+               "organ.og":og,
+               "organ.tm":""+tm
+           },{
+                "$set":{
+                    "organ.$.tm":ntm+""
+                }
+           },function(err,result){
+               mongodb.close();
+               if(err){
+                   return callback(err);
+               }
+               return callback(null);
+           })
+       })
+   })
+}
