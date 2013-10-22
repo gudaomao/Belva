@@ -1,0 +1,10 @@
+body {  font-size: 9pt; font-family: "consolas", "Lucida Grande", Helvetica, Arial, sans-serif; padding:5px;}
+a {  color: #00B7FF;}
+#tbau {width:100%;}
+#resultbox {padding-top:10px;}
+.authorbox{}
+.au_name{}
+.au_organ_box{padding-left:10px;}
+.au_og_name{}
+.au_og_list{padding-left:10px;}
+.au_organ{}
