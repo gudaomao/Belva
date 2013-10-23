@@ -4,9 +4,18 @@ table{width:100%;}
 .td_paste{width:14px; vertical-align:middle;}
 #tbau {width:100%;}
 #resultbox {padding-top:10px;}
-.authorbox{}
-.au_name{font-weight:bold; color:#000;}
-.au_organ_box{padding-left:10px;}
-.au_og_name{}
-.au_og_list{padding-left:10px;}
-.au_organ{}
+
+/* new model */
+.auattrbox{padding-left:20px;}
+.aunamerow{color:#f00; font-weight:bold;}
+.auname{margin-left:4px;}
+
+.attrlistbox{padding-left:20px;}
+
+.v{display:inline-block;margin-right:5px;}
+
+/* new bottom */
+.breadcrumb li{cursor:pointer;}
+
+#floattimebox{display:none;}
+.f_tm{cursor:pointer;}
