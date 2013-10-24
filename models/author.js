@@ -57,6 +57,29 @@ Author.get = function(name,callback){
         });
     });
 };
+Author.addAttr = function(name,doc,callback){
+    mongodb.open(function(err,db){
+        if(err){
+            return callback(err);
+        }
+        db.collection('authors',function(err,collection){
+            if(err){
+                mongodb.close();
+                return callback(err);
+            }
+//            console.log('doc:');
+//            console.log(doc);
+            collection.update({
+                name:name
+            },doc,function(err,result){
+                if(err){
+                    return callback(err);
+                }
+                return callback('');
+            });
+        });
+    });
+};
 Author.delAttr = function(name,doc,callback){
     mongodb.open(function(err,db){
         if(err){
@@ -80,4 +103,4 @@ Author.delAttr = function(name,doc,callback){
             });
         });
     });
-}
+};

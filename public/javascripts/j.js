@@ -20,7 +20,46 @@ $(function(){
     });
     $(".breadcrumb li").click(function(){
         var t = $(this).text();
-        addItem(t,window.bound.getMemText());
+        var val = $.trim(window.bound.getMemText());
+        alert(val);
+        if(val == "")
+            return;
+        t = t.toLowerCase();
+        t = $.trim(t);
+        var d = {};
+        switch(t){
+            case "organ":
+                var doc = {};
+                doc["$addToSet"]={};
+                doc["$addToSet"][t] = {};
+                doc["$addToSet"][t].tm = "";
+                doc["$addToSet"][t].og = val;
+                d.con = doc;
+                break;
+            case "email":
+                var doc = {};
+                doc["$addToSet"] = {};
+                doc["$addToSet"][t] = val;
+                d.con = doc;
+                break;
+            case "tel":
+                var doc = {};
+                doc["$addToSet"] = {};
+                doc["$addToSet"][t] = {};
+                doc["$addToSet"][t].tp = "";
+                doc["$addToSet"][t].no = val;
+                d.con = doc;
+                break;
+            case "homepage":
+                var doc = {};
+                doc["$addToSet"] = {};
+                doc["$addToSet"][t] = {};
+                doc["$addToSet"][t].hp = val;
+                doc["$addToSet"][t].nt = "";
+                d.con = doc;
+                break;
+        }
+        add_attr(t,d);
     });
     //del attr oo
     $(document).on('click','.delattroo',function(e){  //unset
@@ -199,9 +238,25 @@ function addItem(item,val){
         }
     })
 }
+//version 2
+function add_attr(attrname,doc)
+{
+    var name = $("#tbau").val();
+    doc.name = name;
+    alert(doc);
+    $.post('/addattr',doc,function(err){
+        if(err){
+            alert(err);
+        }
+        else{
+            //change to UI
+        }
+    });
+}
 //-----------------------------------------------通用删除----------------------------------------------------------------
 //new del 2
-function del_attr(attrname,doc,$me){
+function del_attr(attrname,doc,$me)
+{
     alert('x');
     var name = $("#tbau").val();
     name = $.trim(name);

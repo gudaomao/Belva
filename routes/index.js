@@ -50,15 +50,25 @@ module.exports  = function(app){
         }
     });
     app.post('/delattr',function(req,res){
-        console.log('common delete ...');
+        console.log('route - /delattr');
         var name = req.param('name');
-        console.log("name:"+name);
         var p = req.param('con');
-        console.log('con:');
-        console.log(p);
         Author.delAttr(name, p,function(err){
             console.log('del over.');
             console.log(err);
+            if(err){
+                res.send(err);
+            }
+            res.send('');
+        });
+    });
+    app.post('/addattr',function(req,res){
+        console.log('route - /addattr');
+        var name = req.param('name');
+        var con = req.param('con');
+        console.log('route - con:');
+        console.log(con);
+        Author.addAttr(name,con,function(err){
             if(err){
                 res.send(err);
             }
