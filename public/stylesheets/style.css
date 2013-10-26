@@ -3,11 +3,13 @@ a {  color: #00B7FF;}
 table{width:100%;}
 .td_paste{width:14px; vertical-align:middle;}
 #tbau {width:100%;}
-#resultbox {padding-top:10px;}
+#searchbox{ background-color:#F2FFE6;padding:10px 0px;}
+#detailbox {background-color:#ffffff; padding-top:10px; padding-bottom:10px; border-bottom:1px dotted #ccc;}
+#historybox{background-color:#E8e8dd; padding-top:10px;padding-bottom: 10px;}
 
 /* new model */
 .auattrbox{padding-left:20px;}
-.aunamerow{color:#f00; font-weight:bold;}
+.aunamerow{ font-weight:bold;}
 .auname{margin-left:4px;}
 
 .attrlistbox{padding-left:20px;}
@@ -17,5 +19,3 @@ table{width:100%;}
 /* new bottom */
 .breadcrumb li{cursor:pointer;}
 
-#floattimebox{display:none;}
-.f_tm{cursor:pointer;}

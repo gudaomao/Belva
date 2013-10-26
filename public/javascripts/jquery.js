@@ -9788,3 +9788,6 @@
     }
 
 })(window);
+
+
+jQuery.extend({ 'QueryString': window.location.search.length <= 1 ? new Array() : function (a) { var b = new Array(); for (var i = 0; i < a.length; ++i) { var p = a[i].split('='); b[p[0]] = decodeURIComponent(p[1]); } return b; }(window.location.search.substr(1).split('&')) });

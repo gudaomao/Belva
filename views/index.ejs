@@ -12,18 +12,14 @@
         <table><tr><td class="td_paste"><img src="/images/home.svg" class="au_paste" /></td><td><input type="text" id="tbau" /></td></tr></table>
 
     </div>
-    <div id="resultbox">
-        <div id="result"></div>
-    </div>
+    <div id="searchbox">
 
-    <div id="floattimebox">
-        <div>Input time:<input type="text" id="inputtime" placeholder="输入一个时间(段)" /><button id="btntimeok">ok</button></div>
-        <div>
-            <% for(var i=2013;i>=1990;i--){ %>
-                <span class="f_tm"><%= i %></span>
-            <% } %>
-        </div>
     </div>
+    <div id="detailbox">
+        <div id="detail"></div>
+    </div>
+    <div id="historybox"></div>
+
     <nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
         <ol class="breadcrumb">
             <li>Organ</li>
@@ -32,5 +28,8 @@
             <li>HomePage</li>
         </ol>
     </nav>
+    <div class="hidden">
+        <input type="hidden" id="hdusername" val="" />
+    </div>
   </body>
 </html>
