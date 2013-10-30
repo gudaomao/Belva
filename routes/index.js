@@ -1,6 +1,30 @@
 Author = require('../models/author.js');
 
 module.exports  = function(app){
+    app.get('/nologin',function(req,res){
+        console.log('nologin');
+        res.render('nologin',{});
+    });
+    app.get('/edit/:name/:attrname',function(req,res){
+        console.log('/edit/author/attr')
+    });
+    app.get('/del/author/:name',function(req,res){
+        console.log('/delauthor');
+        var name = req.params.name;
+        res.render('delauthor',{
+            name:name
+        });
+    });
+    app.post('/del/author/:name',function(req,res){
+        console.log('post /delautthor');
+        var name = req.params.name;
+        Author.del(name,function(err){
+            if(err){
+                res.send(err);
+            }
+            res.send('ok');
+        });
+    });
     app.get('/',function(req,res){
         console.log('/');
         res.render('index',{});
@@ -9,7 +33,12 @@ module.exports  = function(app){
         console.log('/author');
         var au = req.param("t");
         Author.get(au,function(err,doc){
-            if(doc){
+            if(err){
+                console.log('/author 发生错误:');
+                console.log(err);
+                res.send('');
+            }
+            else{
                 res.send(doc);
             }
         });

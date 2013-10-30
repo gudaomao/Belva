@@ -36,6 +36,8 @@ Author.prototype.save = function(callback){
             collection.insert(au,{safe:true},function(err,author){
                 console.log('model author.save end: ok');
                 mongodb.close();
+                console.log('result:');
+                console.log(author);
                 if(err){
                     callback(err);
                 }
@@ -65,6 +67,29 @@ Author.get = function(name,callback){
                     return callback(err);
                 }
                 return callback(null,doc);
+            });
+        });
+    });
+};
+Author.del = function(name,callback){
+    console.log('model author.del start');
+    mongodb.open(function(err,db){
+        if(err){
+            return callback(err);
+        }
+        db.collection('authors',function(err,collection){
+            if(err){
+                mongodb.close();
+                return callback(err);
+            }
+            collection.remove({
+                name:name
+            },function(err,result){
+                mongodb.close();
+                if(err){
+                    return callback(err);
+                }
+                return callback('');
             });
         });
     });
@@ -108,9 +133,12 @@ Author.addAttr = function(name,doc,callback){
                 mongodb.close();
                 return callback(err);
             }
-            collection.update({
+            doc['$set'] = {'time':new Date().getTime()};
+            console.log(doc);
+            collection.findAndModify({
                 name:name
-            },doc,function(err,result){
+            },[['time',1]],
+                doc,function(err,result){
                 console.log('model author.addAttr end: ok');
                 mongodb.close();
                 if(err){
@@ -133,10 +161,14 @@ Author.delAttr = function(name,doc,callback){
                 return callback(err);
             }
             console.log('doc:');
+            //doc.time = new Date().getTime();
+            doc['$set'] = {'time':new Date().getTime()};
             console.log(doc);
-            collection.update({
+            collection.findAndModify({
                 name:name
-            },doc,function(err,result){
+            },
+                [['time',1]]
+            ,doc,function(err,result){
                 console.log('model author.delAttr end: ok');
                 mongodb.close();
                 if(err){
@@ -161,7 +193,8 @@ Author.getLastTen = function(user,callback){
             collection.find({
                 user:user
             },{
-                limit:10
+                limit:10,
+                sort:[["time",-1]]
             }).toArray(function(err,docs){
                     mongodb.close();
                     console.log('model author.getLastTen end: '+docs.length);

@@ -2,6 +2,7 @@ body {  font-size: 9pt; font-family: "consolas", "Lucida Grande", Helvetica, Ari
 a {  color: #00B7FF;}
 table{width:100%;}
 .td_paste{width:14px; vertical-align:middle;}
+.hidden{display: none}
 #tbau {width:100%;}
 #searchbox{ background-color:#F2FFE6;padding:10px 0px;}
 #detailbox {background-color:#ffffff; padding-top:10px; padding-bottom:10px; border-bottom:1px dotted #ccc;}
@@ -19,3 +20,4 @@ table{width:100%;}
 /* new bottom */
 .breadcrumb li{cursor:pointer;}
 
+.menu{position:absolute; background-color: #00B7FF; padding:10px;}

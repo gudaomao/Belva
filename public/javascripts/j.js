@@ -2,7 +2,6 @@
 
 //--------------------------------------------------页面事件-------------------------------------------------------------
 $(function(){
-
     //初始化工作面板
     var username = $.QueryString['u'];
     $("#hdusername").val(username);
@@ -41,6 +40,7 @@ $(function(){
         var val = $.trim(window.bound.getMemText());
         if(val == "")
             return;
+        val = val.replace(/\r/g,'');
         t = t.toLowerCase();
         t = $.trim(t);
         var d = {};
@@ -49,6 +49,7 @@ $(function(){
                 var doc = {};
                 doc["$addToSet"]={};
                 doc["$addToSet"][t] = {};
+                doc["$addToSet"][t].obj =1;
                 doc["$addToSet"][t].og = val;
                 doc["$addToSet"][t].tm = "";
                 d.con = doc;
@@ -63,16 +64,39 @@ $(function(){
                 var doc = {};
                 doc["$addToSet"] = {};
                 doc["$addToSet"][t] = {};
-                doc["$addToSet"][t].no = val;
-                doc["$addToSet"][t].tp = "";
+                doc["$addToSet"][t].obj = 1;
+                doc["$addToSet"][t].number = val;
+                doc["$addToSet"][t].type = "";
                 d.con = doc;
                 break;
             case "homepage":
                 var doc = {};
                 doc["$addToSet"] = {};
+                doc["$addToSet"][t] = val;
+                d.con = doc;
+                break;
+            case "location":
+                var doc = {};
+                doc["$addToSet"] = {};
                 doc["$addToSet"][t] = {};
-                doc["$addToSet"][t].hp = val;
-                doc["$addToSet"][t].nt = "";
+                doc["$addToSet"][t].obj = 1;
+                doc["$addToSet"][t].location = val;
+                doc["$addToSet"][t].time = "";
+                d.con = doc;
+                break;
+            case "fields":
+                var doc = {};
+                doc["$addToSet"] = {};
+                doc["$addToSet"][t]= {};
+                doc["$addToSet"][t].obj = 1;
+                doc["$addToSet"][t].fields = val;
+                doc["$addToSet"][t].time = "";
+                d.con = doc;
+                break;
+            case "position":
+                var doc = {};
+                doc["$addToSet"] = {};
+                doc["$addToSet"][t] = val;
                 d.con = doc;
                 break;
         }
@@ -80,33 +104,30 @@ $(function(){
     });
 
     //del attr oo
-    $(document).on('click','.delattroo',function(e){  //unset
-        var $me = $(e.target);
-        var attrname = $me.parent().parent().attr('name');
-//        var v1 = $me.prev().prev().text();
-//        if(v1=='null') v1 = '';
-//        var v2 = $me.prev().text();
-//        if(v2=='null') v2='';
-        var $pms = $me.parent().children();
-        console.log($pms);
-        var doc = {};
-        for(var i=0;i<$pms.length;i++){
-            if($($pms[i]).hasClass('v')){
-                var k = $($pms[i]).attr('title');
-                var v = $($pms[i]).text();
-                if(v=='null') v='';
-                doc[k] = v;
-            }
-        }
-        var d = {};
-        d["$unset"] = {};
-        d["$unset"][attrname] = doc;
-        del_attr(attrname,d,$me);
-    });
+//    $(document).on('click','.delattroo',function(e){  //unset
+//        var $me = $(e.target);
+//        var attrname = $me.parent().parent().attr('name');
+//        var $pms = $me.parent().children();
+//        console.log($pms);
+//        var doc = {};
+//        for(var i=0;i<$pms.length;i++){
+//            if($($pms[i]).hasClass('v')){
+//                var k = $($pms[i]).attr('title');
+//                var v = $($pms[i]).text();
+//                if(v=='null') v='';
+//                doc[k] = v;
+//            }
+//        }
+//        var d = {};
+//        d["$unset"] = {};
+//        d["$unset"][attrname] = doc;
+//        del_attr(attrname,d,$me);
+//    });
     //del attr aa
     $(document).on('click','.delattrax',function(e){  //pull
         var $me = $(e.target);
         var attrname = $me.parent().parent().attr('name');
+        console.log('attrname:'+attrname);
         var v1 = $me.prev().text();
         if(v1=='null') v1 = '';
         var doc ={};
@@ -116,8 +137,10 @@ $(function(){
     });
     //del attr ao
     $(document).on('click','.delattrao',function(e){  //pull
+        console.log('delattrao:');
         var $me = $(e.target);
         var attrname = $me.parent().parent().attr('name');
+        console.log('attrname:'+attrname);
         var v1 = $me.prev().prev().text();
         if(v1 =='null') v1 = '';
         var v2 = $me.prev().text();
@@ -133,16 +156,16 @@ $(function(){
         del_attr(attrname,doc,$me);
     });
     //del attr
-    $(document).on('click','.delattrx',function(e){  //unset
-        var $me= $(e.target);
-        var attrname = $me.parent().parent().attr('name');
-        var v1 = $me.prev().text();
-        if(v1=='null') v1 = '';
-        var doc = {};
-        doc["$unset"] = {};
-        doc["$unset"][attrname] = 1;
-        del_attr(attrname,doc,$me);
-    });
+//    $(document).on('click','.delattrx',function(e){  //unset
+//        var $me= $(e.target);
+//        var attrname = $me.parent().parent().attr('name');
+//        var v1 = $me.prev().text();
+//        if(v1=='null') v1 = '';
+//        var doc = {};
+//        doc["$unset"] = {};
+//        doc["$unset"][attrname] = 1;
+//        del_attr(attrname,doc,$me);
+//    });
 
 });
 //----------------------------------------------以下为学者 ---------------------------------------------------------------
@@ -158,7 +181,6 @@ function searchauthor(t){
             if(data && data.length>0){
                 var h = '';
                 data.forEach(function(au,index){
-                    //h+='<div class="searchrow"><a href="javascript:getauthor(\''+au.name+'\');">'+au.name+'</a></div>';
                     h+='<div class="aunamerow"><img src="/images/user.svg" /><span class="auname"><a href="javascript:getauthor(\''+au.name+'\');">'+au.name+'</a></span></div>';
                 })
                 $("#searchbox").html(h);
@@ -174,24 +196,25 @@ function searchauthor(t){
 //获取学者详细信息
 function getauthor(t){
     t = $.trim(t);
+    console.log(t);
     $.get('/author',{t:t},function(data,status){
-        console.log(data);
+        //console.log(data);
         var h='';
         if(data){
-            h+=formatauthor(data);
+            h+=formateditauthor(data);
             $("#tbau").val(data.name);
             $("#detail").html(h);
             $("#searchbox").hide();
         }
-//        if(data && data.length>0){
-//            var h="";
-//            data.forEach(function(au,index){
-//                h+=formatauthor(au);
-//                $("#tbau").val(au.name);
-//            });
-//            $("#detail").html(h);
-//            $("#searchbox").hide();
-//        }
+        if(data && data.length>0){
+            var h="";
+            data.forEach(function(au,index){
+                h+=formatauthor(au);
+                $("#tbau").val(au.name);
+            });
+            $("#detail").html(h);
+            $("#searchbox").hide();
+        }
     });
 }
 //新加学者
@@ -220,77 +243,117 @@ function history(){
         if(data){
             var h = '';
             data.forEach(function(au,index){
-                h+=formatauthor(au);
+                h+=formathistoryauthor(au,true);
             })
             $("#historybox").html(h);
         }
     })
 }
 
+//显示学者
+function formateditauthor(data){
+    h = '<div class="authorbox">';
+    h+='<div class="aunamerow"><img src="/images/user.svg" /><span class="auname"><a href="/del/author/'+data.name+'">'+data.name+'</a></span></div>';
+    h+='<div class="auattrbox">';
+    h+=formatattr(data);
+    h+='</div>';
+    h+='</div>';
+    return h;
+}
 //显示学者(格式化内容)
-function formatauthor(data)
+function formathistoryauthor(data, isfold)
 {
+    var h='';
     if(data.name){
-        var h = '<div class="authorbox">';
-        h+='<div class="aunamerow"><img src="/images/user.svg" /><span class="auname">'+data.name+'</span></div>';
-        h+='<div class="auattrbox">';
-        for(var key in data){
-            if(key=="_id" || key=="name" || key=="searchname" || key=="time" || key=="user"){
-                continue;
-            }
-            var tp = getType(data[key]);
-            switch(tp.toString()){
-                case "Array":
-                    h+='<div class="attrnamerow"><span class="attr_name">'+key+'</span></div>';
-                    h+='<div class="attrlistbox" name="'+key+'">';
-                    for(var i =0;i<data[key].length;i++){
-                        var x = data[key][i];
-                        switch(getType(x)){
-                            case "Array":
-                                break;
-                            case "Object":
-                                h+='<div class="attrrow">';
-                                for(var n in x){
-                                    var _k = n;
-                                    var _v = x[n];
-                                    if(_v==''){
-                                        _v = 'null';
-                                    }
-                                    h+='<span class="v" title="'+_k+'">'+_v+'</span>';
-                                }
-                                h+='<img src="/images/sad.svg" class="delattrao" /></div>';
-                                break;
-                            case "string":
-                            case "number":
-                                h+='<div class="attrrow"><span class="v">'+data[key][i]+'</span><img src="/images/sad.svg" class="delattrax" /></div>';
-                                break;
-                        }
-
-                    }
-                    h+='</div>';
-                    break;
-                case "Object":
-                    h+='<div class="attrnamerow"><span class="attr_name">'+key+'</span></div>';
-                    h+='<div class="attrlistbox" name="'+key+'">';
-                    var o = data[key];
-                    h+='<div class="attrrow">';
-                    for(var k in o){
-                        h+='<span class="v" title="'+k+'">'+o[k]+'</span>';
-                    }
-                    h+='<img src="/images/sad.svg" class="delattroo" /></div>';
-                    h+='</div>';
-                    break;
-                case "string":
-                case "number":
-                    h+='<div class="attrnamerow"><span class="attr_name">'+key+'</span></div>';
-                    h+='<div class="attrlistbox" name="'+key+'">';
-                    h+='<div class="attrrow"><span class="v">'+data[key]+'</span><img src="/images/sad.svg" class="delattrx" /></div>';
-                    h+='</div>';
-                    break;
-            }
+        h = '<div class="authorbox">';
+        h+='<div class="aunamerow"><img src="/images/user.svg" /><span class="auname"><a href="javascript:getauthor(\''+data.name+'\');">'+data.name+'</a></span></div>';
+        h+='<div class="auattrbox'+((isfold)?' hidden':'')+'">';
+        h+=formatattr(data);
+        h+='</div>';
+        h+='</div>';
+    }
+    return h;
+}
+function formatattr(data){
+    var h='';
+    for(var key in data){
+        if(key=="_id" || key=="name" || key=="searchname" || key=="time" || key=="user"){
+            continue;
         }
+        h+='<div class="attrnamerow"><span class="attr_name">'+key+'</span></div>';
+        h+='<div class="attrlistbox" name="'+key+'">';
+        var arr = data[key];
+            for(var i=0;i<arr.length;i++){
+                var a = arr[i];
+                console.log(a);
+                if(a.obj){
+                    h+='<div class="attrrow">';
+                    for(var k in a){
+                        if(k=='obj'){
+                            continue;
+                        }
+                        h+='<span class="v" title="'+k+'">'+a[k]+'</span>';
+                    }
+                    h+='<img src="/images/sad.svg" class="delattrao" />'
+                    h+='</div>';
+                }
+                else{
+                    h+='<div class="attrrow">';
+                    h+='<span class="v">'+a+'</span>';
+                    h+='<img src="/images/sad.svg" class="delattrax" />'
+                    h+='</div>';
+                }
+            }
         h+='</div>';
-        h+='</div>';
+//        var tp = getType(data[key]);
+//        switch(tp.toString()){
+//            case "Array":
+//                h+='<div class="attrnamerow"><span class="attr_name">'+key+'</span></div>';
+//                h+='<div class="attrlistbox" name="'+key+'">';
+//                for(var i =0;i<data[key].length;i++){
+//                    var x = data[key][i];
+//                    switch(getType(x)){
+//                        case "Array":
+//                            break;
+//                        case "Object":
+//                            h+='<div class="attrrow">';
+//                            for(var n in x){
+//                                var _k = n;
+//                                var _v = x[n];
+//                                if(_v==''){
+//                                    _v = 'null';
+//                                }
+//                                h+='<span class="v" title="'+_k+'">'+_v+'</span>';
+//                            }
+//                            h+='<img src="/images/sad.svg" class="delattrao" /></div>';
+//                            break;
+//                        case "string":
+//                        case "number":
+//                            h+='<div class="attrrow"><span class="v">'+data[key][i]+'</span><img src="/images/sad.svg" class="delattrax" /></div>';
+//                            break;
+//                    }
+//                }
+//                h+='</div>';
+//                break;
+//            case "Object":
+//                h+='<div class="attrnamerow"><span class="attr_name">'+key+'</span></div>';
+//                h+='<div class="attrlistbox" name="'+key+'">';
+//                var o = data[key];
+//                h+='<div class="attrrow">';
+//                for(var k in o){
+//                    h+='<span class="v" title="'+k+'">'+o[k]+'</span>';
+//                }
+//                h+='<img src="/images/sad.svg" class="delattroo" /></div>';
+//                h+='</div>';
+//                break;
+//            case "string":
+//            case "number":
+//                h+='<div class="attrnamerow"><span class="attr_name">'+key+'</span></div>';
+//                h+='<div class="attrlistbox" name="'+key+'">';
+//                h+='<div class="attrrow"><span class="v">'+data[key]+'</span><img src="/images/sad.svg" class="delattrx" /></div>';
+//                h+='</div>';
+//                break;
+//        }
     }
     return h;
 }
@@ -313,6 +376,7 @@ function add_attr(attrname,doc)
 //new del 2
 function del_attr(attrname,doc,$me)
 {
+    console.log(doc);
     var name = $("#tbau").val();
     name = $.trim(name);
     var p = {};
