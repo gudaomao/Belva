@@ -115,6 +115,11 @@ module.exports  = function(app){
                 res.send(null);
             }
             res.send(docs);
-        })
+        });
+    });
+    app.post('/photo',function(req,res){
+        console.log('route - /photo');
+        var user = req.param('user');
     })
+
 };
