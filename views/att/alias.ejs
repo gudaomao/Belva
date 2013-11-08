@@ -1,0 +1,39 @@
+<ul>
+    <% if(doc.alias){ doc.alias.forEach(function(a,index){ %>
+    <li><div class="alert"><span><%= a %></span><button class="close delalias">&times;</button></div></li>
+    <% })} %>
+</ul>
+<div class="addattr">
+    <div>
+        <span>别名:</span><input type="text" id="input_alias" />
+    </div>
+    <div>
+        <button id="btnaddalias">Add</button>
+        <button class="cancel">取消</button>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        $("#btnaddalias").click(function(){
+            var alias = $("#input_alias").val();
+            var doc = {
+                "$addToSet":{
+                    "alias":alias
+                }
+            };
+            var aid = $("#aid").val();
+            addattr(aid,doc);
+        });
+        $(".delalias").click(function(){
+            var aid = $("#aid").val();
+            var v = $(this).prev().text();
+            var doc = {
+                "$pull":{
+                    "alias":v
+                }
+            };
+            delattr(aid,doc);
+        });
+    });
+</script>

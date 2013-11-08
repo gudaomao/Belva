@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title></title>
+
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script type="text/javascript" src="/javascripts/jquery.js" ></script>
+    <script type="text/javascript" src="/javascripts/index.js" ></script>
+</head>
+<body>
+<div>
+    <% if(doc){%>
+    <div>
+        <h1 class="authorname"><%= doc.name %></h1>
+
+        <div class="infobox">称谓</div>
+        <div class="field">
+            <div class="left w100"><span>头衔:</span><span class="add">+</span></div>
+            <div class="left">
+                <%- include att/title.ejs %>
+            </div>
+            <div class="clear"></div>
+        </div>
+        <div class="field">
+            <div class="left w100"><span>别称:</span><span class="add">+</span></div>
+            <div class="left">
+                <%- include att/alias.ejs %>
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="infobox">社交信息</div>
+        <div class="field">
+            <div class="left w100"><span>电话:</span><span class="add">+</span></div>
+            <div class="left">
+                <%- include att/tel.ejs %>
+            </div>
+            <div class="clear"></div>
+        </div>
+        <div class="field">
+            <div class="left w100"><span>电子邮箱:</span><span class="add">+</span></div>
+            <div class="left">
+                <%- include att/email.ejs %>
+            </div>
+            <div class="clear"></div>
+        </div>
+        <div class="field">
+            <div class="left w100"><span>个人主页:</span><span class="add">+</span></div>
+            <div class="left">
+                <%- include att/homepage.ejs %>
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="infobox">工作情况</div>
+        <div class="field">
+            <div class="left w100"><span>工作情况:</span><span class="add">+</span></div>
+            <div class="left">
+                <%- include att/working.ejs %>
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="infobox">成绩/地位</div>
+        <div class="field">
+            <div class="left w100"><span>研究领域:</span><span class="add">+</span></div>
+            <div class="left">
+                <%- include att/fields.ejs %>
+            </div>
+            <div class="clear"></div>
+        </div>
+        <div class="field">
+            <div class="left w100"><span>教育背景:</span><span class="add">+</span></div>
+            <div class="left">
+                <%- include att/education.ejs %>
+            </div>
+            <div class="clear"></div>
+        </div>
+        <div class="field">
+            <div class="left w100"><span>隶属组织:</span><span class="add">+</span></div>
+            <div class="left">
+                <%- include att/affiliation.ejs %>
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="infobox">经历</div>
+        <div class="field">
+            <div class="left w100"><span>传记/简介:</span><span class="add">+</span></div>
+            <div class="left">
+                <%- include att/biography.ejs %>
+            </div>
+            <div class="clear"></div>
+        </div>
+        <div class="field">
+            <div class="left w100"><span>工作经历:</span><span class="add">+</span></div>
+            <div class="left">
+                <%- include att/experience.ejs %>
+            </div>
+            <div class="clear"></div>
+        </div>
+        <div class="field">
+            <div class="left w100"><span>荣誉/奖项:</span><span class="add">+</span></div>
+            <div class="left">
+                <%- include att/awards.ejs %>
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="infobox">责任</div>
+        <div class="field">
+            <div class="left w100"><span>科研经费:</span><span class="add">+</span></div>
+            <div class="left">
+                <%- include att/grant.ejs %>
+            </div>
+            <div class="clear"></div>
+        </div>
+        <div class="field">
+            <div class="left w100"><span>讲授课程:</span><span class="add">+</span></div>
+            <div class="left">
+                <%- include att/teaching.ejs %>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+    <%}else{%>
+    <div>没有找到相关学者</div>
+    <div><% if(error){%>
+        <div><%= error %></div>
+        <%}%></div>
+    <%}%>
+    <div class="hidden">
+        <input type="text" id="aid" value="<%= doc?(doc._id):'' %>" />
+    </div>
+</div>
+</body>
+</html>

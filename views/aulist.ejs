@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+<h1>My Edited User List</h1>
+<div>
+    <div>
+        <form method="post" action="/add">
+            <input type="text" name="authorname" />
+            <input type="submit" />
+        </form>
+    </div>
+    <% if(error){%>
+    <span><%= error %></span>
+    <%}else{%>
+    <ul>
+        <% if(docs){ docs.forEach(function(doc,index){%>
+        <li><a href="/author/<%= doc._id %>"><%= doc.name %></a></li>
+        <%})}%>
+    </ul>
+    <%}%>
+</div>
+</body>
+</html>

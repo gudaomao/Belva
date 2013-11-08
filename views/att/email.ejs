@@ -1,0 +1,39 @@
+<ul>
+    <% if(doc.email){doc.email.forEach(function(email,index){%>
+    <li><div class="alert"><span><%= email %></span><button class="close delemail">&times;</button></div></li>
+    <%})} %>
+</ul>
+<div class="addattr">
+    <div>
+        <span>电子邮件:</span><input type="text" id="input_email" />
+    </div>
+    <div>
+        <button id="btnaddemail">Add</button>
+        <button class="cancel">取消</button>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        $("#btnaddemail").click(function(){
+            var email = $("#input_email").val();
+            var doc = {
+                "$addToSet":{
+                    "email":email
+                }
+            };
+            var aid = $("#aid").val();
+            addattr(aid,doc);
+        });
+        $(".delemail").click(function(){
+            var aid = $("#aid").val();
+            var em = $(this).prev().text();
+            var doc = {
+                "$pull":{
+                    "email":em
+                }
+            }
+            delattr(aid,doc);
+        })
+    });
+</script>

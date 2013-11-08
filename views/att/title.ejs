@@ -1,0 +1,38 @@
+<ul>
+    <% if(doc.title){ doc.title.forEach(function(t,index){ %>
+    <li><div class="alert"><span><%= t %></span><button class="close deltitle">&times;</button></div></li>
+    <% })} %>
+</ul>
+<div class="addattr">
+    <div>
+        <span>头衔:</span><input type="text" id="input_title" />
+    </div>
+    <div>
+        <button id="btnaddtitle">Add</button>
+        <button class="cancel">取消</button>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $("#btnaddtitle").click(function(){
+            var title = $("#input_title").val();
+            var doc = {
+                "$addToSet":{
+                    "title":title
+                }
+            };
+            var aid = $("#aid").val();
+            addattr(aid,doc);
+        });
+        $(".deltitle").click(function(){
+            var title = $(this).prev().text();
+            var aid = $("#aid").val();
+            var d = {
+                "$pull":{
+                    "title":title
+                }
+            };
+            delattr(aid,d);
+        })
+    });
+</script>

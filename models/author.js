@@ -1,118 +1,29 @@
 var mongodb = require('./db');
+var settings = require('../settings');
 
 function Author(user,name,searchname){
     this.name = name;
     this.searchname = searchname;
     this.user = user;
 }
-
 module.exports = Author;
 
-Author.prototype.save = function(callback){
-    console.log('model author.save start');
-    var time = new Date().getTime();
-    var au = {
-        user: this.user,
-        name : this.name,
-        searchname : this.searchname.toLowerCase(),
-        time: time
-    };
+Author.get_my_author = function(name,callback){
     mongodb.open(function(err,db){
         if(err){
             return callback(err);
         }
-        db.collection('authors',function(err,collection){
-            if(err){
-                mongodb.close();
-                callback(err);
-            }
-            collection.count({searchname:au.searchname},function(err,count){
-                if(count>0){
-                    console.log('model author.save end: exist this author');
-                    mongodb.close();
-                    return callback('Author exist.');
-                }
-            });
-            collection.insert(au,{safe:true},function(err,author){
-                console.log('model author.save end: ok');
-                mongodb.close();
-                console.log('result:');
-                console.log(author);
-                if(err){
-                    callback(err);
-                }
-                callback(null);
-            });
-        });
-    });
-};
-
-Author.get = function(name,callback){
-    console.log('model author.get start');
-    mongodb.open(function(err,db){
-        if(err){
-            return callback(err);
-        }
-        db.collection('authors',function(err,collection){
+        db.collection(settings.authortable,function(err,collection){
             if(err){
                 mongodb.close();
                 return callback(err);
             }
-            collection.findOne({
-                name:name
-            },function(err,doc){
-                console.log('model author.get end: ok');
-                mongodb.close();
-                if(err){
-                    return callback(err);
-                }
-                return callback(null,doc);
-            });
-        });
-    });
-};
-Author.del = function(name,callback){
-    console.log('model author.del start');
-    mongodb.open(function(err,db){
-        if(err){
-            return callback(err);
-        }
-        db.collection('authors',function(err,collection){
-            if(err){
-                mongodb.close();
-                return callback(err);
-            }
-            collection.remove({
-                name:name
-            },function(err,result){
-                mongodb.close();
-                if(err){
-                    return callback(err);
-                }
-                return callback('');
-            });
-        });
-    });
-};
-Author.search = function(name,callback){
-    console.log('model author.search start.');
-    if(name == ''){
-        return callback(null,'');
-    }
-    mongodb.open(function(err,db){
-        if(err){
-            return callback(err);
-        }
-        db.collection('authors',function(err,collection){
-            if(err){
-                mongodb.close();
-                return callback(err);
-            }
-            console.log('start search');
             collection.find({
-                "searchname":name
+                user:name
+            },{
+                sort:[['time',-1]],
+                limit:10
             }).toArray(function(err,docs){
-                console.log('model author.search end: '+docs.length);
                 mongodb.close();
                 if(err){
                     return callback(err);
@@ -122,116 +33,143 @@ Author.search = function(name,callback){
         });
     });
 };
-Author.addAttr = function(name,doc,callback){
-    console.log('model author.addAttr start.');
+Author.get = function(id,callback){
     mongodb.open(function(err,db){
         if(err){
             return callback(err);
         }
-        db.collection('authors',function(err,collection){
+        db.collection(settings.authortable,function(err,collection){
             if(err){
                 mongodb.close();
                 return callback(err);
             }
-            doc['$set'] = {'time':new Date().getTime()};
-            console.log(doc);
-            collection.findAndModify({
-                name:name
-            },[['time',1]],
-                doc,function(err,result){
-                console.log('model author.addAttr end: ok');
+            var oid =  new require('mongodb').ObjectID(id);
+            collection.findOne({
+                "_id":oid
+            },function(err,doc){
                 mongodb.close();
                 if(err){
                     return callback(err);
                 }
-                return callback('');
+                return callback(null,doc);
             });
         });
     });
-};
-Author.delAttr = function(name,doc,callback){
-    console.log('model author.delAttr start.');
+}
+Author.add = function(name,user,callback){
+    console.log('add author, name:'+name+", user:"+user);
     mongodb.open(function(err,db){
         if(err){
             return callback(err);
         }
-        db.collection('authors',function(err,collection){
+        db.collection(settings.authortable,function(err,collection){
             if(err){
                 mongodb.close();
                 return callback(err);
             }
-            console.log('doc:');
-            //doc.time = new Date().getTime();
-            doc['$set'] = {'time':new Date().getTime()};
-            console.log(doc);
-            collection.findAndModify({
-                name:name
-            },
-                [['time',1]]
-            ,doc,function(err,result){
-                console.log('model author.delAttr end: ok');
+            var lname = name.toLowerCase();
+            collection.findOne({"searchname":lname},function(err,result){
+                if(err){
+                    mongodb.close();
+                    return callback(err);
+                }
+                console.log('搜索结果:');
+                console.log(result);
+                if(result){
+                    return callback(null,result._id);
+                }
+                else{
+                    collection.insert({
+                        name:name,
+                        searchname:lname,
+                        user:user,
+                        time:new Date().getTime()
+                    },{
+                        safe:true
+                    },function(err,rst){
+                        console.log('insert ok.');
+                        console.log(rst);
+                        mongodb.close();
+                        if(err){
+                            return callback(err);
+                        }
+                        if(rst[0]){
+                            return callback(null,rst[0]._id);
+                        }
+                        return callback(null,'');
+                    });
+                };
+            });
+        });
+    });
+}
+Author.addAttr = function(aid,doc,callback){
+    mongodb.open(function(err,db){
+        if(err){
+            return callback(err);
+        }
+        db.collection(settings.authortable,function(err,collection){
+            if(err){
+                mongodb.close();
+                return callback(err);
+            }
+            var oid = new require('mongodb').ObjectID(aid);
+            collection.update({
+                "_id":oid
+            },doc,function(err,result){
                 mongodb.close();
                 if(err){
                     return callback(err);
                 }
-                return callback('');
+                return callback(null);
             });
         });
     });
-};
-Author.getLastTen = function(user,callback){
-    console.log('model author.getLastTen start.');
+}
+Author.delAttr = function(aid,doc,callback){
     mongodb.open(function(err,db){
         if(err){
             return callback(err);
         }
-        db.collection('authors',function(err,collection){
+        db.collection(settings.authortable,function(err,collection){
             if(err){
                 mongodb.close();
                 return callback(err);
             }
-            collection.find({
-                user:user
-            },{
-                limit:10,
-                sort:[["time",-1]]
-            }).toArray(function(err,docs){
-                    mongodb.close();
-                    console.log('model author.getLastTen end: '+docs.length);
-                    if(err){
-                        return callback(err);
-                    }
-                    return callback(null,docs);
+            var oid = new require('mongodb').ObjectID(aid);
+            collection.update({
+                "_id":oid
+            },doc,function(err,result){
+                mongodb.close();
+                if(err){
+                    return callback(err);
+                }
+                return callback(null);
             });
         });
     });
-};
-Author.getLast = function(user,callback){
-    console.log('model author.getLast start.');
+}
+Author.delAttrSp = function(aid,time,doc,callback){
     mongodb.open(function(err,db){
         if(err){
             return callback(err);
         }
-        db.collection('authors',function(err,collection){
+        db.collection(settings.authortable,function(err,collection){
             if(err){
                 mongodb.close();
                 return callback(err);
             }
-            collection.find({
-                user:user
-            },{
-                limit:10
-            }).sort({
-                    time:-1
-                }).toArray(function(err,doc){
-                    console.log('model author.getLast end: ok');
-                    mongodb.close();
-                    if(err){
-                        return callback(err);
-                    }
-                    return callback(null,doc);
-
+            var oid = new require('mongodb').ObjectID(aid);
+            collection.update({
+                "_id":oid,
+                "working.time":time
+            },doc,function(err,result){
+                mongodb.close();
+                if(err){
+                    return callback(err);
+                }
+                return callback(null);
             });
         });
     });
-};
+}

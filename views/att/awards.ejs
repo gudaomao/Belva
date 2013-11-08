@@ -1,0 +1,38 @@
+<ul>
+    <% if(doc.awards){doc.awards.forEach(function(awd,index){%>
+    <li><div class="alert"><span><%= awd %></span><button class="close delawd">&times;</button></div></li>
+    <%})}%>
+</ul>
+<div class="addattr">
+    <div>
+        <span>荣誉/奖项:</span><input type="text" id="input_awards" />
+    </div>
+    <div>
+        <button id="btnaddawards">Add</button>
+        <button class="cancel">取消</button>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $("#btnaddawards").click(function(){
+            var awards = $("#input_awards").val();
+            var doc = {
+                "$addToSet":{
+                    "awards":awards
+                }
+            };
+            var aid = $("#aid").val();
+            addattr(aid,doc);
+        });
+        $(".delawd").click(function(){
+            var aid = $("#aid").val();
+            var v = $(this).prev().text();
+            var doc = {
+                "$pull":{
+                    "awards":v
+                }
+            };
+            delattr(aid,doc);
+        });
+    });
+</script>

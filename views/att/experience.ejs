@@ -1,0 +1,38 @@
+<ul>
+    <% if(doc.experience){doc.experience.forEach(function(exp,index){%>
+    <li><div class="alert"><span><%= exp %></span><button class="close delexp">&times;</button></div></li>
+    <%})}%>
+</ul>
+<div class="addattr">
+    <div>
+        <span>工作经历:</span><textarea id="input_experience"></textarea>
+    </div>
+    <div>
+        <button id="btnaddexperience">Add</button>
+        <button class="cancel">取消</button>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $("#btnaddexperience").click(function(){
+            var experience = $("#input_experience").val();
+            var doc = {
+                "$addToSet":{
+                    "experience":experience
+                }
+            };
+            var aid = $("#aid").val();
+            addattr(aid,doc);
+        });
+        $(".delexp").click(function(){
+            var aid = $("#aid").val();
+            var v = $(this).prev().text();
+            var doc = {
+                "$pull":{
+                    "experience":v
+                }
+            };
+            delattr(aid,doc);
+        });
+    });
+</script>

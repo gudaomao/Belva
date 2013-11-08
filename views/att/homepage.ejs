@@ -1,0 +1,40 @@
+<ul>
+    <% if(doc.homepage){doc.homepage.forEach(function(hp,index){%>
+    <li><div class="alert"><span><%= hp %></span><button class="close delhp">&times;</button></div></li>
+    <%})} %>
+</ul>
+<div class="addattr">
+    <div>
+        <span>个人主页:</span><input type="text" id="input_homepage" />
+    </div>
+    <div>
+        <button id="btnaddhomepage">Add</button>
+        <button class="cancel">取消</button>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(function(){
+        $("#btnaddhomepage").click(function(){
+            var homepage = $("#input_homepage").val();
+            var doc = {
+                "$addToSet":{
+                    "homepage":homepage
+                }
+            };
+            var aid = $("#aid").val();
+            addattr(aid,doc);
+        });
+        $(".delhp").click(function(){
+            var aid = $("#aid").val();
+            var v = $(this).prev().text();
+            var doc = {
+                "$pull":{
+                    "homepage":v
+                }
+            }
+            delattr(aid,doc);
+        })
+    });
+</script>

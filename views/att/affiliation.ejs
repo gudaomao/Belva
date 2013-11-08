@@ -1,0 +1,38 @@
+<ul>
+    <% if(doc.affiliation){doc.affiliation.forEach(function(aff,index){%>
+    <li><div class="alert"><span><%= aff %></span><button class="close delaff">&times;</button></div></li>
+    <%})}%>
+</ul>
+<div class="addattr">
+    <div>
+        <span>隶属组织:</span><input type="text" id="input_affiliation" />
+    </div>
+    <div>
+        <button id="btnaddaffiliation">Add</button>
+        <button class="cancel">取消</button>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $("#btnaddaffiliation").click(function(){
+            var affiliation = $("#input_affiliation").val();
+            var doc = {
+                "$addToSet":{
+                    "affiliation":affiliation
+                }
+            };
+            var aid = $("#aid").val();
+            addattr(aid,doc);
+        });
+        $(".delaff").click(function(){
+            var aid = $("#aid").val();
+            var v = $(this).prev().text();
+            var doc = {
+                "$pull":{
+                    "affiliation":v
+                }
+            };
+            delattr(aid,doc);
+        })
+    });
+</script>

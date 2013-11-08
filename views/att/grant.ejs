@@ -1,0 +1,38 @@
+<ul>
+    <% if(doc.grant){doc.grant.forEach(function(grt,index){%>
+    <li><div class="alert"><span><%= grt %></span><button class="close delgrt">&times;</button></div></li>
+    <%})}%>
+</ul>
+<div class="addattr">
+    <div>
+        <span>科研经费:</span><textarea id="input_grant"></textarea>
+    </div>
+    <div>
+        <button id="btnaddgrant">Add</button>
+        <button class="cancel">取消</button>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $("#btnaddgrant").click(function(){
+            var grant = $("#input_grant").val();
+            var doc = {
+                "$addToSet":{
+                    "grant":grant
+                }
+            };
+            var aid = $("#aid").val();
+            addattr(aid,doc);
+        });
+        $(".delgrt").click(function(){
+            var aid = $("#aid").val();
+            var v = $(this).prev().text();
+            var doc = {
+                "$pull":{
+                    "grant":v
+                }
+            };
+            delattr(aid,doc);
+        });
+    });
+</script>

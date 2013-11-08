@@ -1,0 +1,39 @@
+<ul>
+    <% if(doc.fields){doc.fields.forEach(function(f,index){%>
+    <li><div class="alert"><span><%= f %></span><button class="close delfields">&times;</button></div></li>
+    <%})}%>
+</ul>
+<div class="addattr">
+    <div>
+        <span>研究领域:</span><input type="text" id="input_fields" />
+    </div>
+    <div>
+        <button id="btnaddfields">Add</button>
+        <button class="cancel">取消</button>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        $("#btnaddfields").click(function(){
+            var fields = $("#input_fields").val();
+            var doc = {
+                "$addToSet":{
+                    "fields":fields
+                }
+            };
+            var aid = $("#aid").val();
+            addattr(aid,doc);
+        });
+        $(".delfields").click(function(){
+            var v = $(this).prev().text();
+            var aid = $("#aid").val();
+            var doc = {
+                "$pull":{
+                    "fields":v
+                }
+            };
+            delattr(aid,doc);
+        });
+    });
+</script>

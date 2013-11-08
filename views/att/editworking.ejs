@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="/javascripts/jquery.js" ></script>
+</head>
+<body>
+<div></div>
+<h1><%= name %></h1>
+<div class="editbox">
+    <div><span class="lb">机构名称:</span><input type="text" id="input_organ" value="<%= working?working.organ:'' %>" /></div>
+    <div><span class="lb">部门:</span><input type="text" id="input_department" value="<%= working?working.department:'' %>" /></div>
+    <div><span class="lb">位置:</span><input type="text" id="input_location" value="<%= working?working.location:'' %>" /></div>
+    <div><span class="lb">地址:</span><input type="text" id="input_address" value="<%= working?working.address:'' %>" /></div>
+    <div><span class="lb">办公室:</span><input type="text" id="input_office" value="<%= working?working.office:'' %>" /></div>
+    <div><span class="lb">职位:</span><input type="text" id="input_position" value="<%= working?working.position:'' %>" /></div>
+    <div><span class="lb">工作电邮:</span><input type="text" id="input_w_email" value="<%= working?working.email:'' %>" /></div>
+    <div><span class="lb">工作主页:</span><input type="text" id="input_w_homepage" value="<%= working?working.homepage:'' %>" /></div>
+    <div><span class="lb">工作内容:</span><textarea id="input_w_fields"><%= working?working.fields:'' %></textarea></div>
+    <div>
+        <button id="btneditworking"><img src="/images/pencil.svg" /> Edit</button>
+        <button class="cancel">取消</button>
+    </div>
+    <div>&nbsp;</div>
+    <div>
+        <button class="delworking"><img src="/images/remove.svg" /> DEL</button>
+    </div>
+</div>
+<div class="hidden">
+    <input type="text" id="input_aid" value="<%= aid %>" />
+    <input type="text" id="input_time" value="<%= working.time %>" />
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        $("#btneditworking").click(function(){
+            var aid = $("#input_aid").val();
+            var organ = $("#input_organ").val();
+            var department = $("#input_department").val();
+            var location = $("#input_location").val();
+            var address = $("#input_address").val();
+            var office = $("#input_office").val();
+            var position = $("#input_position").val();
+            var email = $("#input_w_email").val();
+            var homepage = $("#input_w_homepage").val();
+            var fields = $("#input_w_fields").val();
+            var time =$("#input_time").val();
+            var doc = {
+                "organ":organ,
+                "department":department,
+                "location":location,
+                "address":address,
+                "office":office,
+                "position":position,
+                "email":email,
+                "homepage":homepage,
+                "fields":fields,
+                "time":time
+            };
+            console.log(aid);
+            console.log(time);
+            $.post('/editworking',{aid:aid,doc:doc},function(err,status){
+                if(err){
+                    alert(err);
+                }
+                else{
+                    window.location.href='/author/'+$("#input_aid").val();
+                }
+            });
+
+        });
+        $(".delworking").click(function(){
+            var time = $("#input_time").val();
+            var aid = $("#input_aid").val();
+            $.post('/delworking',{aid:aid,time:time},function(err,status){
+                console.log(err);
+                if(err){
+                    alert(err);
+                }
+                else{
+                    //window.location.href='/author/'+$("#input_aid").val();
+
+                }
+            })
+        });
+        $(".cancel").click(function(){
+            window.location.href='/author/'+$("#input_aid").val();
+        })
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,38 @@
+<ul>
+    <% if(doc.teaching){doc.teaching.forEach(function(tch,index){%>
+    <li><div class="alert"><span><%= tch %></span><button class="close deltch">&times;</button></div></li>
+    <%})}%>
+</ul>
+<div class="addattr">
+    <div>
+        <span>讲授课程:</span><input type="text" id="input_teaching" />
+    </div>
+    <div>
+        <button id="btnaddteaching">Add</button>
+        <button class="cancel">取消</button>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $("#btnaddteaching").click(function(){
+            var teaching = $("#input_teaching").val();
+            var doc = {
+                "$addToSet":{
+                    "teaching":teaching
+                }
+            };
+            var aid = $("#aid").val();
+            addattr(aid,doc);
+        });
+        $(".deltch").click(function(){
+            var aid = $("#aid").val();
+            var v = $(this).prev().text();
+            var doc = {
+                "$pull":{
+                    "teaching":v
+                }
+            };
+            delattr(aid,doc);
+        });
+    });
+</script>

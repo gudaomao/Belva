@@ -1,23 +1,37 @@
-body {  font-size: 9pt; font-family: "consolas", "Lucida Grande", Helvetica, Arial, sans-serif; padding:5px; color:#808080;}
+body {  font:9pt "Lucida Grande", Helvetica, Arial, sans-serif; min-width:420px; }
 a {  color: #00B7FF;}
-table{width:100%;}
-.td_paste{width:14px; vertical-align:middle;}
-.hidden{display: none}
-#tbau {width:100%;}
-#searchbox{ background-color:#F2FFE6;padding:10px 0px;}
-#detailbox {background-color:#ffffff; padding-top:10px; padding-bottom:10px; border-bottom:1px dotted #ccc;}
-#historybox{background-color:#E8e8dd; padding-top:10px;padding-bottom: 10px;}
+h1{margin:10px 0px;}
+label{display:block;}
+ul{margin:0px;padding:0px;}
+li{list-style-image:url('/images/arrow-right.svg'); margin:2px 2px;}
+button{font-size:9pt;border-radius: 3px; border:1px solid #ccc; background-color:#fff;}
+.clear{clear:both;}
+.left{float:left;}
+.w100{width:100px;}
+.hidden{display: none;}
 
-/* new model */
-.auattrbox{padding-left:20px;}
-.aunamerow{ font-weight:bold;}
-.auname{margin-left:4px;}
-
-.attrlistbox{padding-left:20px;}
-
-.v{display:inline-block;margin-right:5px;}
-
-/* new bottom */
-.breadcrumb li{cursor:pointer;}
-
-.menu{position:absolute; background-color: #00B7FF; padding:10px;}
+.authorname{text-align: center;}
+.infobox{line-height: 1.5em; background-color: #EBEBEB; text-align:center; font-weight:bold;margin:3px 0px; color:#00B7FF; border-radius:3px;}
+.addattr{display: none;}
+.field{padding-bottom: 5px;margin-bottom: 5px; border-bottom: 1px dotted #ccc;}
+.add{cursor: pointer; padding:0px 3px; background-color:#5BC0DE; font-weight:bold; border-radius:3px; color:#fff;}
+.addattr{border:1px solid #ccc; border-radius:5px;padding:10px; background-color:#f0f0f0;}
+.alert{padding:1px 6px; border-radius:3px;}
+.close{margin:0px 0px 0px 10px; padding:0px 3px; border:none; cursor:pointer; display:none; background-color:transparent;}
+.edit{display:none;}
+.addattr input[type=text]{width:162px;}
+.addattr span{display:inline-block;width:55px;}
+.workingpanel{margin-bottom:5px;padding-bottom:5px;border-bottom:1px dotted #ccc;}
+.lb{display:inline-block;width:70px; color:#888;}
+@media (min-width:630px) {
+    .addattr input[type=text],.editbox input{width:362px;}
+    .addattr textarea,.editbox textarea{width:362px;}
+}
+@media (min-width:830px) {
+    .addattr input[type=text],.editbox input{width:562px;}
+    .addattr textarea,.editbox textarea{width:562px;}
+}
+@media (min-width:1030px) {
+    .addattr input[type=text],.editbox input{width:762px;}
+    .addattr textarea,.editbox textarea{width:762px;}
+}

@@ -1,39 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <title></title>
-    <link rel="stylesheet" href="/stylesheets/bootstrap.css" />
     <link rel='stylesheet' href='/stylesheets/style.css' />
-    <script src="/javascripts/jquery.js"></script>
-    <script src="/javascripts/j.js"></script>
   </head>
   <body>
+    <h1>Welcome To Author Editor!</h1>
     <div>
-        <table><tr><td class="td_paste"><img src="/images/home.svg" class="au_paste" /></td><td><input type="text" id="tbau" /></td></tr></table>
-
-    </div>
-    <div id="searchbox">
-
-    </div>
-    <div id="detailbox">
-        <div id="detail"></div>
-    </div>
-    <div id="historybox"></div>
-
-    <nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
-        <ol class="breadcrumb">
-            <li>Organ</li>
-            <li>Email</li>
-            <li>Tel</li>
-            <li>HomePage</li>
-            <li>Location</li>
-            <li>Fields</li>
-            <li>Position</li>
-            <li>Source</li>
-        </ol>
-    </nav>
-    <div class="hidden">
-        <input type="hidden" id="hdusername" val="" />
+        <% if(!u){ %>
+        <a href='/login'>Login</a>
+        <% }else{ %>
+        <a href="/aulist">Authors List</a>
+        <% } %>
     </div>
   </body>
 </html>

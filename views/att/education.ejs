@@ -1,0 +1,39 @@
+<ul>
+    <% if(doc.education){doc.education.forEach(function(edu,index){%>
+    <li><div class="alert"><span><%= edu %></span><button class="close deledu">&times;</button></div></li>
+    <%})}%>
+</ul>
+<div class="addattr">
+    <div>
+        <span class="lb">受到的教育:</span><input type="text" id="input_education" />
+    </div>
+    <div>
+        <button id="btnaddeducation">Add</button>
+        <button class="cancel">取消</button>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        $("#btnaddeducation").click(function(){
+            var education = $("#input_education").val();
+            var doc = {
+                "$addToSet":{
+                    "education":education
+                }
+            };
+            var aid = $("#aid").val();
+            addattr(aid,doc);
+        });
+        $(".deledu").click(function(){
+            var aid = $("#aid").val();
+            var v = $(this).prev().text();
+            var doc = {
+                "$pull":{
+                    "education":v
+                }
+            }
+            delattr(aid,doc);
+        })
+    });
+</script>

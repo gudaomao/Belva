@@ -1,0 +1,85 @@
+<div class="addattr">
+    <div><span>机构名称:</span><input type="text" id="input_organ" /></div>
+    <div><span>部门:</span><input type="text" id="input_department" /></div>
+    <div><span>位置:</span><input type="text" id="input_location" /></div>
+    <div><span>地址:</span><input type="text" id="input_address" /></div>
+    <div><span>办公室:</span><input type="text" id="input_office" /></div>
+    <div><span>职位:</span><input type="text" id="input_position" /></div>
+    <div><span>工作电邮:</span><input type="text" id="input_w_email" /></div>
+    <div><span>工作主页:</span><input type="text" id="input_w_homepage" /></div>
+    <div><span>工作内容:</span><textarea id="input_w_fields"></textarea></div>
+    <div>
+        <button id="btnaddworking">Add</button>
+        <button class="cancel">取消</button>
+    </div>
+</div>
+<div>
+    <% if(doc.working){doc.working.forEach(function(w,index){ %>
+        <div class="workingpanel">
+            <div class="left">
+                <ul>
+                <% if(w.organ){%><li><div class="alert"><span class="lb">organ</span><span><%= w.organ %></span></div></li><%}%>
+                <% if(w.organ){%><li><div class="alert"><span class="lb">organ</span><span><%= w.organ %></span></div></li><%}%>
+                <% if(w.department){ %><li><div class="alert"><span class="lb">department</span><span><%= w.department %></span></div></li><%}%>
+                <% if(w.location){ %><li><div class="alert"><span class="lb">location</span><span><%= w.location %></span></div></li><%}%>
+                <% if(w.address){ %><li><div class="alert"><span class="lb">address</span><span><%= w.address %></span></div></li><%}%>
+                <% if(w.office){ %><li><div class="alert"><span class="lb">office</span><span><%= w.office %></span></div></li><%}%>
+                <% if(w.position){ %><li><div class="alert"><span class="lb">position</span><span><%= w.position %></span></div></li><%}%>
+                <% if(w.email){ %><li><div class="alert"><span class="lb">email</span><span><%= w.email %></span></div></li><%}%>
+                <% if(w.homepage){ %><li><div class="alert"><span class="lb">homepage</span><span><%= w.homepage %></span></div></li><%}%>
+                <% if(w.fields){ %><li><div class="alert"><span class="lb">fields</span><span><%= w.fields %></span></div></li><%}%>
+                </ul>
+            </div>
+            <div class="left">
+                <button class="edit">&raquo;</button>
+            </div>
+            <input type="text" value="<%= w.time %>" class="hidden" />
+            <div class="clear"></div>
+        </div>
+    <% })} %>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        $(".workingpanel").hover(function(){
+            $($(this).children()[1]).children().show();
+        },function(){
+            $($(this).children()[1]).children().hide();
+        });
+        $("#btnaddworking").click(function(){
+            var organ = $("#input_organ").val();
+            var department = $("#input_department").val();
+            var location = $("#input_location").val();
+            var address = $("#input_address").val();
+            var office = $("#input_office").val();
+            var position = $("#input_position").val();
+            var email = $("#input_w_email").val();
+            var homepage = $("#input_w_homepage").val();
+            var fields = $("#input_w_fields").val();
+            var time = new Date().getTime();
+            var doc = {
+                "$addToSet":{
+                    "working":{
+                        "organ":organ,
+                        "department":department,
+                        "location":location,
+                        "address":address,
+                        "office":office,
+                        "position":position,
+                        "email":email,
+                        "homepage":homepage,
+                        "fields":fields,
+                        "time":time
+                    }
+                }
+            };
+            var aid = $("#aid").val();
+            addattr(aid,doc);
+        });
+        $(".edit").click(function(){
+            var aid = $("#aid").val();
+            var time = $(this).parent().next().val();
+            window.location.href= '/editworking/'+aid+'/'+time;
+        })
+    });
+</script>

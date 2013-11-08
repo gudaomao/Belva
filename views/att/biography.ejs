@@ -1,0 +1,38 @@
+<ul>
+    <% if(doc.biography){doc.biography.forEach(function(bio,index){%>
+    <li><div class="alert"><span><%= bio %></span><button class="close delbio">&times;</button></div></li>
+    <%})} %>
+</ul>
+<div class="addattr">
+    <div>
+        <span>传记/简介:</span><textarea id="input_biography"></textarea>
+    </div>
+    <div>
+        <button id="btnaddbiography">Add</button>
+        <button class="cancel">取消</button>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $("#btnaddbiography").click(function(){
+            var biography = $("#input_biography").val();
+            var doc = {
+                "$addToSet":{
+                    "biography":biography
+                }
+            };
+            var aid = $("#aid").val();
+            addattr(aid,doc);
+        });
+        $(".delbio").click(function(){
+            var aid = $("#aid").val();
+            var v  = $(this).prev().text();
+            var doc  = {
+                "$pull":{
+                    "biography":v
+                }
+            };
+            delattr(aid,doc);
+        });
+    });
+</script>

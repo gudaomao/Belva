@@ -1,0 +1,57 @@
+<ul>
+    <% if(doc.tel){doc.tel.forEach(function(t,index){ %>
+    <li><div class="alert"><span><%= t.type %></span>:<span><%= t.number %></span><button class="close deltel">&times;</button></div></li>
+    <%})} %>
+</ul>
+<div class="addattr">
+    <div>
+        <span>类型:</span>
+        <select id="select_tel">
+            <option value="office">办公</option>
+            <option value="fax">传真</option>
+            <option value="personal">个人</option>
+            <option value="mobile">手机</option>
+        </select>
+    </div>
+    <div>
+        <span>号码:</span>
+        <input type="text" id="input_tel" />
+    </div>
+    <div>
+        <button id="btnaddtel">Add</button>
+        <button class="cancel">取消</button>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        $("#btnaddtel").click(function(){
+            var type = $("#select_tel").val();
+            var number = $("#input_tel").val();
+            var doc = {
+                "$addToSet":{
+                    "tel":{
+                        "type":type,
+                        "number":number
+                    }
+                }
+            };
+            var aid = $("#aid").val();
+            addattr(aid,doc);
+        });
+        $(".deltel").click(function(){
+            var aid = $("#aid").val();
+            var no = $(this).prev().text();
+            var tp = $(this).prev().prev().text();
+            var doc = {
+                "$pull":{
+                    "tel":{
+                        "type":tp,
+                        "number":no
+                    }
+                }
+            };
+            delattr(aid,doc);
+        })
+    })
+</script>

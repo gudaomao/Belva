@@ -1,125 +1,163 @@
-Author = require('../models/author.js');
+//var Author = require('../models/author.js');
+//var User = require('../models/user.js');
 
-module.exports  = function(app){
-    app.get('/nologin',function(req,res){
-        console.log('nologin');
-        res.render('nologin',{});
-    });
-    app.get('/edit/:name/:attrname',function(req,res){
-        console.log('/edit/author/attr')
-    });
-    app.get('/del/author/:name',function(req,res){
-        console.log('/delauthor');
-        var name = req.params.name;
-        res.render('delauthor',{
-            name:name
-        });
-    });
-    app.post('/del/author/:name',function(req,res){
-        console.log('post /delautthor');
-        var name = req.params.name;
-        Author.del(name,function(err){
-            if(err){
-                res.send(err);
-            }
-            res.send('ok');
-        });
-    });
+var DB = require('../models/db.js');
+
+module.exports = function(app){
     app.get('/',function(req,res){
-        console.log('/');
-        res.render('index',{});
+        res.render('index',{
+            "u":req.session.user
+        });
     });
-    app.get('/author',function(req,res){
-        console.log('/author');
-        var au = req.param("t");
-        Author.get(au,function(err,doc){
+    app.get('/login',function(req,res){
+        res.render('login',{});
+    });
+    app.post('/login',function(req,res){
+        var name = req.body.username;
+        var pwd = req.body.password;
+        console.log('login 收到登录请求,用户:'+name+", 密码:"+pwd);
+        DB.User_login(name,pwd,function(err,user){
             if(err){
-                console.log('/author 发生错误:');
+                console.log('登录出错:');
                 console.log(err);
-                res.send('');
+                req.flash('error',err);
+                return res.redirect('/login');
             }
             else{
-                res.send(doc);
+                req.session.user = user.name;
+                req.flash('success','登录成功');
+                res.redirect('/aulist');
             }
         });
     });
-    app.post('/save',function(req,res){
-        console.log('/save');
-        var user = req.param('user');
-        var name = req.param('au');
-        var searchname = req.param('searchname');
-        var au = new Author(user,name, searchname,'','');
-        au.save(function(err){
-            var r = {msg:'ok'};
+    app.get('/aulist', checkLogin);
+    app.get('/aulist',function(req,res){
+        var name = req.session.user;
+        console.log('aulist 收到请求:'+name);
+        DB.Author_get_my_author(name,function(err,docs){
             if(err){
-                r.msg = err;
+                req.flash('error',err);
+                return res.redirect('/aulist');
             }
-            res.send(r);
+            res.render('aulist',{
+                docs:docs,
+                user: req.session.user,
+                success: req.flash('success').toString(),
+                error:req.flash('error').toString()
+            });
         });
     });
-    app.post('/delattr',function(req,res){
-        console.log('route - /delattr');
-        var name = req.param('name');
-        var p = req.param('con');
-        Author.delAttr(name, p,function(err){
-            console.log('del over.');
-            console.log(err);
+    app.get('/author/:id',function(req,res){
+        var id = req.params.id;
+        DB.Author_get(id,function(err,doc){
             if(err){
-                res.send(err);
+                req.flash('error',err);
+                return res.redirect('back');
             }
-            res.send('');
+            res.render('author',{
+                doc:doc,
+                user:req.session.user,
+                error:req.flash('error').toString(),
+                success:req.flash('success').toString()
+            });
+        });
+    });
+    app.post('/add',checkLogin);
+    app.post('/add',function(req,res){
+        var name = req.body.authorname;
+        if(name==''){
+            req.flash('error','学者名不能为空');
+            return res.redirect('back');
+        }
+        var user = req.session.user;
+        DB.Author_add(name,user,function(err,result){
+            if(err){
+                req.flash('error',err);
+                return res.redirect('back');
+            }
+            console.log('add author: '+result);
+            res.redirect('/author/'+result);
         });
     });
     app.post('/addattr',function(req,res){
-        console.log('route - /addattr');
-        var name = req.param('name');
-        var con = req.param('con');
-        console.log('route - con:');
-        console.log(con);
-        Author.addAttr(name,con,function(err){
+        var aid = req.body.aid;
+        var doc = req.body.doc;
+        console.log('reseived request, aid:'+aid+", doc:");
+        console.log(doc);
+        DB.Author_add_Attr(aid,doc,function(err){
+            console.log('add attr result:');
+            console.log(err);
+            res.send(err);
+        })
+    });
+    app.post('/delattr',function(req,res){
+        var aid = req.body.aid;
+        var doc = req.body.doc;
+        console.log('received del attr request, aid:'+aid+',doc:');
+        console.log(doc);
+        DB.Author_del_Attr(aid,doc,function(err){
+            res.send(err);
+        });
+    });
+    app.get('/editworking/:aid/:workingtime',function(req,res){
+        var aid = req.params.aid;
+        var time = req.params.workingtime;
+        DB.Author_get(aid,function(err,doc){
             if(err){
                 res.send(err);
             }
-            res.send('');
-        });
-    });
-    app.get('/getlast',function(req,res){
-        console.log('route - /getlast');
-        var user = req.param('user');
-        Author.getLast(user,function(err,doc){
-            if(err){
-                res.send(null);
-            }
             else{
-                res.send(doc);
+                if(doc.working){
+                    var b = false;
+                    var wk = null;
+                    doc.working.forEach(function(w,index){
+                        if(w.time == time){
+                            wk = w;
+                        }
+                    });
+                    var d = {};
+                    d.aid = aid;
+                    d.working = wk;
+                    d.name = doc.name;
+                    res.render('att/editworking',d);
+                }
+                else{
+                    res.send('no woking.');
+                }
             }
+        })
+    });
+    app.post('/editworking',function(req,res){
+        var aid = req.body.aid;
+        var doc = req.body.doc;
+        console.log('aid:'+aid);
+        console.log('doc:');
+        console.log(doc);
+        DB.Author_edit_Working(aid,doc,function(err){
+            res.send(err);
+        })
+    });
+    app.post('/delworking',function(req,res){
+        var aid = req.body.aid;
+        var time = req.body.time;
+        DB.Author_del_working(aid,time,function(err){
+            res.send(err);
         });
     });
-    app.get('/search',function(req,res){
-        console.log('route - /search');
-        var t = req.param('t');
-        Author.search(t,function(err,docs){
-            console.log('search result:');
-            console.log(err);
-            if(err){
-                res.send(null);
-            }
-            res.send(docs);
-        });
-    });
-    app.get('/getlastten',function(req,res){
-        console.log('route - /getlastten');
-        var user = req.param('user');
-        Author.getLastTen(user,function(err,docs){
-            if(err){
-                res.send(null);
-            }
-            res.send(docs);
-        });
-    });
-    app.post('/photo',function(req,res){
-        console.log('route - /photo');
-        var user = req.param('user');
-    })
 
-};
+
+    function checkLogin(req, res, next) {
+        if (!req.session.user) {
+            req.flash('error', '未登录!');
+            res.redirect('/login');
+        }
+        next();
+    }
+    function checkNotLogin(req, res, next) {
+        if (req.session.user) {
+            req.flash('error', '已登录!');
+            res.redirect('back');
+        }
+        next();
+    }
+}
