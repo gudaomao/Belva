@@ -5,7 +5,7 @@
 </ul>
 <div class="addattr">
     <div>
-        <span>科研经费:</span><textarea id="input_grant"></textarea>
+        <span>科研经费:</span><div id="input_grant" contenteditable="true" class="editarea"></div>
     </div>
     <div>
         <button id="btnaddgrant">Add</button>
@@ -15,10 +15,22 @@
 <script type="text/javascript">
     $(function(){
         $("#btnaddgrant").click(function(){
-            var grant = $("#input_grant").val();
+            var grant = $("#input_grant")[0].innerText;
+            var d = grant.split('\n');
+            var nx = [];
+            for(var i=0;i< d.length;i++)
+            {
+                var x = d[i];
+                x = $.trim(x);
+                if(x!=""){
+                    nx.push(x);
+                }
+            }
             var doc = {
                 "$addToSet":{
-                    "grant":grant
+                    "grant":{
+                        "$each":nx
+                    }
                 }
             };
             var aid = $("#aid").val();

@@ -5,7 +5,7 @@
 </ul>
 <div class="addattr">
     <div>
-        <span>工作经历:</span><textarea id="input_experience"></textarea>
+        <span>工作经历:</span><div id="input_experience" class="editarea" contenteditable="true"></div>
     </div>
     <div>
         <button id="btnaddexperience">Add</button>
@@ -15,10 +15,22 @@
 <script type="text/javascript">
     $(function(){
         $("#btnaddexperience").click(function(){
-            var experience = $("#input_experience").val();
+            var experience = $("#input_experience")[0].innerText;
+            var d = experience.split('\n');
+            var nx = [];
+            for(var i=0;i< d.length;i++)
+            {
+                var x = d[i];
+                x = $.trim(x);
+                if(x!=""){
+                    nx.push(x);
+                }
+            }
             var doc = {
                 "$addToSet":{
-                    "experience":experience
+                    "experience":{
+                        "$each":nx
+                    }
                 }
             };
             var aid = $("#aid").val();
@@ -27,6 +39,7 @@
         $(".delexp").click(function(){
             var aid = $("#aid").val();
             var v = $(this).prev().text();
+            alert(v);
             var doc = {
                 "$pull":{
                     "experience":v

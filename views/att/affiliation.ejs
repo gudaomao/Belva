@@ -5,7 +5,7 @@
 </ul>
 <div class="addattr">
     <div>
-        <span>隶属组织:</span><input type="text" id="input_affiliation" />
+        <span>隶属组织:</span><div id="input_affiliation" class="editarea" contenteditable="true"></div>
     </div>
     <div>
         <button id="btnaddaffiliation">Add</button>
@@ -15,10 +15,22 @@
 <script type="text/javascript">
     $(function(){
         $("#btnaddaffiliation").click(function(){
-            var affiliation = $("#input_affiliation").val();
+            var affiliation = $("#input_affiliation")[0].innerText;
+            var d = affiliation.split('\n');
+            var nx = [];
+            for(var i=0;i< d.length;i++)
+            {
+                var x = d[i];
+                x = $.trim(x);
+                if(x!=""){
+                    nx.push(x);
+                }
+            }
             var doc = {
                 "$addToSet":{
-                    "affiliation":affiliation
+                    "affiliation":{
+                        "$each":nx
+                    }
                 }
             };
             var aid = $("#aid").val();

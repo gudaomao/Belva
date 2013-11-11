@@ -26,6 +26,7 @@ db.open(function(e,d){
 });
 
 var authors = db.collection(settings.authortable);
+var users = db.collection(settings.usertable);
 
 exports.Author_get_my_author = function(name,callback){
     authors.find({
@@ -57,8 +58,6 @@ exports.Author_add = function(name,user,callback){
         if(err){
             return callback(err);
         }
-        console.log('搜索结果:');
-        console.log(result);
         if(result){
             return callback(null,result._id);
         }
@@ -71,8 +70,6 @@ exports.Author_add = function(name,user,callback){
             },{
                 safe:true
             },function(err,rst){
-                console.log('insert ok.');
-                console.log(rst);
                 if(err){
                     return callback(err);
                 }
@@ -84,6 +81,17 @@ exports.Author_add = function(name,user,callback){
         };
     });
 };
+exports.Author_del = function(id,callback){
+    var oid = new require('mongodb').ObjectID(id);
+    authors.remove({
+        "_id":oid
+    },function(err,result){
+        if(err){
+            return callback(err);
+        }
+        return callback('');
+    });
+}
 exports.Author_add_Attr = function(aid,doc,callback){
     var oid = new require('mongodb').ObjectID(aid);
     authors.update({
@@ -108,7 +116,6 @@ exports.Author_del_Attr = function(aid,doc,callback){
 };
 exports.Author_edit_Working = function(aid,doc,callback){
     var oid = new require('mongodb').ObjectID(aid);
-    console.log(doc);
     authors.update({
         "_id":oid,
         "working.time": doc.time
@@ -122,7 +129,6 @@ exports.Author_edit_Working = function(aid,doc,callback){
 };
 exports.Author_del_working = function(aid,time,callback){
     var oid = new require('mongodb').ObjectID(aid);
-    console.log('will del: aid:'+aid+", time:"+time);
     authors.update({
         "_id":oid
     },{
@@ -132,16 +138,14 @@ exports.Author_del_working = function(aid,time,callback){
             }
         }
     },function(err,result){
-        console.log(result);
         return callback(err);
     });
 };
 
 exports.User_save = function(name,pwd,callback){
-
 };
 exports.User_login = function(name,pwd,callback){
     return callback(null,{
-        "name":"lls"
+        "name":name
     });
 };

@@ -5,13 +5,13 @@
 
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <script type="text/javascript" src="/javascripts/jquery.js" ></script>
-    <script type="text/javascript" src="/javascripts/index.js" ></script>
+    <script type="text/javascript" src="/javascripts/author.js" ></script>
 </head>
 <body>
 <div>
     <% if(doc){%>
     <div>
-        <h1 class="authorname"><%= doc.name %></h1>
+        <h1 class="authorname" id="auname"><%= doc.name %></h1>
 
         <div class="infobox">称谓</div>
         <div class="field">
@@ -122,6 +122,21 @@
             </div>
             <div class="clear"></div>
         </div>
+        <div class="infobox">相关文献</div>
+        <div class="field">
+            <div class="left w100"><span>指导文章:</span><span class="add">+</span></div>
+            <div class="left">
+                <%- include att/supervision.ejs %>
+            </div>
+            <div class="clear"></div>
+        </div>
+        <div class="field">
+            <div class="left w100"><span>出版物:</span><span class="add">+</span></div>
+            <div class="left">
+                <%- include att/publication.ejs %>
+            </div>
+            <div class="clear"></div>
+        </div>
     </div>
     <%}else{%>
     <div>没有找到相关学者</div>
@@ -132,6 +147,12 @@
     <div class="hidden">
         <input type="text" id="aid" value="<%= doc?(doc._id):'' %>" />
     </div>
+</div>
+<div class="lefttopfix">
+    <a href="/aulist"><img src="/images/arrow-left.svg" id="returntolist" /></a>
+</div>
+<div class="righttopfix">
+    <a href="/del/<%= (doc)?doc._id:'' %>"><img src="/images/remove.svg" id="delauthor" /></a>
 </div>
 </body>
 </html>

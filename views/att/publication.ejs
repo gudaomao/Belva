@@ -1,0 +1,50 @@
+<div class="addattr">
+    <div>
+        <span>出版物:</span><div id="input_publication" class="editarea" contenteditable="true"></div>
+    </div>
+    <div>
+        <button id="btnaddpublication">Add</button>
+        <button class="cancel">取消</button>
+    </div>
+</div>
+<ul>
+    <% if(doc.publication){doc.publication.forEach(function(pub,index){%>
+    <li><div class="alert"><span><%= pub %></span><button class="close delpub">&times;</button></div></li>
+    <%})}%>
+</ul>
+<script type="text/javascript">
+    $(function(){
+        $("#btnaddpublication").click(function(){
+            var v = $("#input_publication")[0].innerText;
+            var d = v.split('\n');
+            var nx = [];
+            for(var i=0;i< d.length;i++)
+            {
+                var x = d[i];
+                x = $.trim(x);
+                if(x!=""){
+                    nx.push(x);
+                }
+            }
+            var doc = {
+                "$addToSet":{
+                    "publication":{
+                        "$each":nx
+                    }
+                }
+            };
+            var aid = $("#aid").val();
+            addattr(aid,doc);
+        });
+        $(".delpub").click(function(){
+            var aid = $("#aid").val();
+            var v = $(this).prev().text();
+            var doc = {
+                "$pull":{
+                    "publication":v
+                }
+            };
+            delattr(aid,doc);
+        });
+    });
+</script>

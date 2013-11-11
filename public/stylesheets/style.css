@@ -10,6 +10,9 @@ button{font-size:9pt;border-radius: 3px; border:1px solid #ccc; background-color
 .w100{width:100px;}
 .hidden{display: none;}
 
+.lefttopfix{z-index:100;top:10px;left:10px;position: absolute;}
+.righttopfix{z-index:101;top:10px;right:10px;position: absolute;}
+
 .authorname{text-align: center;}
 .infobox{line-height: 1.5em; background-color: #EBEBEB; text-align:center; font-weight:bold;margin:3px 0px; color:#00B7FF; border-radius:3px;}
 .addattr{display: none;}
@@ -23,15 +26,36 @@ button{font-size:9pt;border-radius: 3px; border:1px solid #ccc; background-color
 .addattr span{display:inline-block;width:55px;}
 .workingpanel{margin-bottom:5px;padding-bottom:5px;border-bottom:1px dotted #ccc;}
 .lb{display:inline-block;width:70px; color:#888;}
+#returntolist,#delauthor{cursor: pointer;}
 @media (min-width:630px) {
     .addattr input[type=text],.editbox input{width:362px;}
-    .addattr textarea,.editbox textarea{width:362px;}
+    .addattr textarea,.editbox textarea{width:362px; overflow-y:visible;}
+    .editarea{width:362px;}
 }
 @media (min-width:830px) {
     .addattr input[type=text],.editbox input{width:562px;}
-    .addattr textarea,.editbox textarea{width:562px;}
+    .addattr textarea,.editbox textarea{width:562px; overflow-y:visible;}
+    .editarea{width:562px;}
 }
 @media (min-width:1030px) {
     .addattr input[type=text],.editbox input{width:762px;}
-    .addattr textarea,.editbox textarea{width:762px;}
+    .addattr textarea,.editbox textarea{width:762px; overflow-y:visible;}
+    .editarea{width:762px;}
+}
+.editarea{
+    display:inline-block;
+    min-width:162px;
+    min-height: 120px;
+    _height: 120px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 3px;
+    outline: 0;
+    border: 1px solid #a0b3d6;
+    font-size: 12px;
+    word-wrap: break-word;
+    overflow-x: hidden;
+    overflow-y: auto;
+    _overflow-y: visible;
+    background-color:#fff;
 }

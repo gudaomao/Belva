@@ -15,7 +15,6 @@ module.exports = function(app){
     app.post('/login',function(req,res){
         var name = req.body.username;
         var pwd = req.body.password;
-        console.log('login 收到登录请求,用户:'+name+", 密码:"+pwd);
         DB.User_login(name,pwd,function(err,user){
             if(err){
                 console.log('登录出错:');
@@ -33,7 +32,6 @@ module.exports = function(app){
     app.get('/aulist', checkLogin);
     app.get('/aulist',function(req,res){
         var name = req.session.user;
-        console.log('aulist 收到请求:'+name);
         DB.Author_get_my_author(name,function(err,docs){
             if(err){
                 req.flash('error',err);
@@ -75,26 +73,51 @@ module.exports = function(app){
                 req.flash('error',err);
                 return res.redirect('back');
             }
-            console.log('add author: '+result);
             res.redirect('/author/'+result);
         });
+    });
+    app.get('/del',checkLogin);
+    app.get('/del/:id',function(req,res){
+        var id= req.params.id;
+        DB.Author_get(id,function(err,doc){
+            if(err){
+                res.send(err);
+            }
+            else{
+                var id = doc._id;
+                var name = doc.name;
+                res.render('delauthor',{
+                    auid:id,
+                    auname:name
+                });
+            }
+        });
+    });
+    app.post('/del',checkLogin);
+    app.post('/del/:id',function(req,res){
+        var id= req.param('id');
+        if(id){
+            DB.Author_del(id,function(err){
+                if(err){
+                    res.send(err);
+                }
+                res.send('');
+            })
+        }
+        else{
+            res.send('没有发现有效的学者id');
+        }
     });
     app.post('/addattr',function(req,res){
         var aid = req.body.aid;
         var doc = req.body.doc;
-        console.log('reseived request, aid:'+aid+", doc:");
-        console.log(doc);
         DB.Author_add_Attr(aid,doc,function(err){
-            console.log('add attr result:');
-            console.log(err);
             res.send(err);
         })
     });
     app.post('/delattr',function(req,res){
         var aid = req.body.aid;
         var doc = req.body.doc;
-        console.log('received del attr request, aid:'+aid+',doc:');
-        console.log(doc);
         DB.Author_del_Attr(aid,doc,function(err){
             res.send(err);
         });
@@ -130,9 +153,6 @@ module.exports = function(app){
     app.post('/editworking',function(req,res){
         var aid = req.body.aid;
         var doc = req.body.doc;
-        console.log('aid:'+aid);
-        console.log('doc:');
-        console.log(doc);
         DB.Author_edit_Working(aid,doc,function(err){
             res.send(err);
         })

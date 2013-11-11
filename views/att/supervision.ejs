@@ -1,0 +1,51 @@
+<div class="addattr">
+    <div>
+        <span>指导文章:</span><div id="input_supervision" class="editarea" contenteditable="true"></div>
+    </div>
+    <div>
+        <button id="btnaddsupervision">Add</button>
+        <button class="cancel">取消</button>
+    </div>
+</div>
+<ul>
+    <% if(doc.supervision){doc.supervision.forEach(function(sv,index){%>
+    <li><div class="alert"><span><%= sv %></span><button class="close delsv">&times;</button></div></li>
+    <%})}%>
+</ul>
+
+<script type="text/javascript">
+    $(function(){
+        $("#btnaddsupervision").click(function(){
+            var v = $("#input_supervision")[0].innerText;
+            var d = v.split('\n');
+            var nx = [];
+            for(var i=0;i< d.length;i++)
+            {
+                var x = d[i];
+                x = $.trim(x);
+                if(x!=""){
+                    nx.push(x);
+                }
+            }
+            var doc = {
+                "$addToSet":{
+                    "supervision":{
+                        "$each":nx
+                    }
+                }
+            };
+            var aid = $("#aid").val();
+            addattr(aid,doc);
+        });
+        $(".delsv").click(function(){
+            var aid = $("#aid").val();
+            var v = $(this).prev().text();
+            var doc = {
+                "$pull":{
+                    "supervision":v
+                }
+            };
+            delattr(aid,doc);
+        });
+    });
+</script>

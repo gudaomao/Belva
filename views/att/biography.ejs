@@ -5,7 +5,7 @@
 </ul>
 <div class="addattr">
     <div>
-        <span>传记/简介:</span><textarea id="input_biography"></textarea>
+        <span>传记/简介:</span><div id="input_biography" class="editarea" contenteditable="true"></div>
     </div>
     <div>
         <button id="btnaddbiography">Add</button>
@@ -15,7 +15,7 @@
 <script type="text/javascript">
     $(function(){
         $("#btnaddbiography").click(function(){
-            var biography = $("#input_biography").val();
+            var biography = $("#input_biography")[0].innerText;
             var doc = {
                 "$addToSet":{
                     "biography":biography

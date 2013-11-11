@@ -5,7 +5,7 @@
 </ul>
 <div class="addattr">
     <div>
-        <span class="lb">受到的教育:</span><input type="text" id="input_education" />
+        <span class="lb">教育背景:</span><div id="input_education" class="editarea" contenteditable="true"></div>
     </div>
     <div>
         <button id="btnaddeducation">Add</button>
@@ -16,10 +16,22 @@
 <script type="text/javascript">
     $(function(){
         $("#btnaddeducation").click(function(){
-            var education = $("#input_education").val();
+            var d = $("#input_education")[0].innerText;
+            var d = d.split('\n');
+            var nx = [];
+            for(var i=0;i< d.length;i++)
+            {
+                var x = d[i];
+                x = $.trim(x);
+                if(x!=""){
+                    nx.push(x);
+                }
+            }
             var doc = {
                 "$addToSet":{
-                    "education":education
+                    "education":{
+                        "$each":nx
+                    }
                 }
             };
             var aid = $("#aid").val();

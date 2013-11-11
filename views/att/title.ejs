@@ -5,7 +5,7 @@
 </ul>
 <div class="addattr">
     <div>
-        <span>头衔:</span><input type="text" id="input_title" />
+        <span>头衔:</span><div class="editarea" contenteditable="true" id="input_title"></div>
     </div>
     <div>
         <button id="btnaddtitle">Add</button>
@@ -15,10 +15,22 @@
 <script type="text/javascript">
     $(function(){
         $("#btnaddtitle").click(function(){
-            var title = $("#input_title").val();
+            var v = $("#input_title")[0].innerText;
+            var d = v.split('\n');
+            var nx = [];
+            for(var i=0;i< d.length;i++)
+            {
+                var x = d[i];
+                x = $.trim(x);
+                if(x!=""){
+                    nx.push(x);
+                }
+            }
             var doc = {
                 "$addToSet":{
-                    "title":title
+                    "title":{
+                        "$each":nx
+                    }
                 }
             };
             var aid = $("#aid").val();

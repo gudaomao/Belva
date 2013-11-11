@@ -2,24 +2,20 @@
 <html lang="en">
 <head>
     <title></title>
-    <script src="/javascripts/jquery.js" ></script>
-    <script src="/javascripts/delauthor.js" ></script>
+    <link rel="stylesheet" href="/stylesheets/bootstrap.css" />
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script type="text/javascript" src="/javascripts/jquery.js "></script>
+    <script type="text/javascript" src="/javascripts/delauthor.js" ></script>
 </head>
 <body>
-    <div>
-        你确定要删除:
+<div>
+    <div class="jumbotron">
+        <h3>你确实真的肯定要 <%= auname %> 删除吗?</h3>
+        <p><button id="sure" class="btn btn-sm btn-danger">我确定一定以及肯定.</button> <button class="btn btn-sm btn-default">先不删除,我先看看再说</button></p>
     </div>
-    <div>
-        <span id="name"><%= name %></span>
-    </div>
-    <div>
-        <input type="button" id="btndel" value="确信删除" />
-    </div>
-    <div>
-        <label id='lbmsg'></label>
-    </div>
-    <div id="ret" style="display: none">
-        <a href="/">返回</a>
-    </div>
+</div>
+<div class="hidden">
+    <input type="hidden" id="hdid" value="<%= auid?auid:'' %>" />
+</div>
 </body>
 </html>
