@@ -1,0 +1,20 @@
+<div id="avatars">
+
+</div>
+<script type="text/javascript">
+    $(function(){
+        var id = $("#aid").val();
+        console.log(id);
+        $.get('/img/au/'+id,{},function(data,status){
+            if(data){
+                console.log(data);
+                var h= '';
+                for(var i=0;i<data.length;i++){
+                    h+='<div class="left"><img src="/img/'+data[i]+'" class="avimg" /></div>';
+                }
+                h+='<div class="clear"></div>';
+            }
+            $("#avatars").html(h);
+        })
+    })
+</script>

@@ -26,6 +26,7 @@ button{font-size:9pt;border-radius: 3px; border:1px solid #ccc; background-color
 .addattr span{display:inline-block;width:55px;}
 .workingpanel{margin-bottom:5px;padding-bottom:5px;border-bottom:1px dotted #ccc;}
 .lb{display:inline-block;width:70px; color:#888;}
+.avimg{width:100px;height:100px;margin:10px;}
 #returntolist,#delauthor{cursor: pointer;}
 @media (min-width:630px) {
     .addattr input[type=text],.editbox input{width:362px;}

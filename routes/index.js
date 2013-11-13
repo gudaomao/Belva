@@ -2,6 +2,7 @@
 //var User = require('../models/user.js');
 
 var DB = require('../models/db.js');
+var fs = require('fs');
 
 module.exports = function(app){
     app.get('/',function(req,res){
@@ -148,7 +149,7 @@ module.exports = function(app){
                     res.send('no woking.');
                 }
             }
-        })
+        });
     });
     app.post('/editworking',function(req,res){
         var aid = req.body.aid;
@@ -164,8 +165,61 @@ module.exports = function(app){
             res.send(err);
         });
     });
-
-
+    app.get('/upload/:id',function(req,res){
+        var id = req.params.id;
+        res.render('upload',{
+            id:id
+        });
+    });
+    app.post('/upload',function(req,res){
+        var id = req.body.hdid;
+        for (var i in req.files) {
+            if (req.files[i].size == 0){
+                // 使用同步方式删除一个文件
+                fs.unlinkSync(req.files[i].path);
+            } else {
+                //var target_path = './public/images/' + req.files[i].name;
+                // 使用同步方式重命名一个文件
+                //fs.renameSync(req.files[i].path, target_path);
+                DB.File_save(req.files[i].path,id,function(err,fileInfo){
+                    res.redirect('/author/'+id)
+                });
+            }
+        }
+    });
+    app.get('/img/:fn',function(req,res){
+        var fn = req.params.fn;
+        DB.File_get(fn,function(err,data){
+            if(err){
+                res.writeHead('404');
+            }
+            else{
+                res.writeHead('200',{"Content-Type":"image/jpg"});
+                res.end(data,'binary');
+            };
+        });
+    });
+    app.get('/img/au/:au',function(req,res){
+         var au = req.params.au;
+         DB.File_getImages(au,function(err,files){
+            if(err){
+//                res.render('uploadresult',{
+//                    imgs:[]
+//                });
+                res.send([]);
+            }
+            else{
+                var imgs = [];
+                for(var i=0;i<files.length;i++){
+                    imgs.push(files[i].filename);
+                }
+                res.send(imgs);
+//                res.render('uploadresult',{
+//                    imgs:imgs
+//                });
+            }
+        });
+    });
     function checkLogin(req, res, next) {
         if (!req.session.user) {
             req.flash('error', '未登录!');

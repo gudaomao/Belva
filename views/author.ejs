@@ -12,7 +12,16 @@
     <% if(doc){%>
     <div>
         <h1 class="authorname" id="auname"><%= doc.name %></h1>
-
+        <div class="infobox">头像</div>
+        <div class="field">
+            <div class="left w100">
+                <a href="/upload/<%= doc._id %>">上传</a>
+            </div>
+            <div class="left">
+                <%- include att/avatars.ejs %>
+            </div>
+            <div class="clear"></div>
+        </div>
         <div class="infobox">称谓</div>
         <div class="field">
             <div class="left w100"><span>头衔:</span><span class="add">+</span></div>
