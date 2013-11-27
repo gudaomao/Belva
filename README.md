@@ -3,11 +3,11 @@ Belva
 
 Selva server
 
-//注释掉以下两行，
-//app.get('/', routes.index);
-//app.get('/users', user.list);
-//新加下面一行
-routes(app);
+	//注释掉以下两行，
+	//app.get('/', routes.index);
+	//app.get('/users', user.list);
+	//新加下面一行
+	routes(app);
 
 
 module.exports = function(app){
